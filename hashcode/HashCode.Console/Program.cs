@@ -25,7 +25,11 @@ namespace HashCode.Console
 
             foreach (var fileName in FileNames)
             {
-                var simulation = FileHelper.ReadFromFile(fileName);
+                var input = FileHelper.ReadFromFile(fileName);
+
+                var result = Solve(input);
+
+                GenerateSubmission(result, fileName);
 
                 Trace.WriteLine($"Completed {fileName}...");
                 System.Console.WriteLine($"Completed {fileName}...");
@@ -35,52 +39,86 @@ namespace HashCode.Console
         private static Output Solve(Input input)
         {
             var output = new Output();
-            //var intersections = Enumerable
-            //    .Range(0, simulation.NumberOfIntersections).Select(x => new Intersection { Id = x })
-            //    .ToList();
+            var day = 0;
 
-            //foreach (var street in simulation.Streets)
-            //{
-            //    intersections[street.StartIntersection].Outgoing.Add(street);
-            //    intersections[street.EndIntersection].Incoming.Add(street);
-            //}
+            do
+            {
+                foreach (var currentProject in output.Projects.Where(x => x.Duration > 0))
+                {
+                    currentProject.Duration--;
+                    if (currentProject.Duration == 0)
+                    {
+                        for (int i = 0; i < currentProject.Skills.Count; i++)
+                        {
+                            var contributor = currentProject.Contributors[i];
+                            var skill = contributor.Skills.FirstOrDefault(x => x.Name == currentProject.Skills[i].Name);
+                            if (skill != null && (skill.Level == currentProject.Skills[i].Level || skill.Level == currentProject.Skills[i].Level - 1))
+                            {
+                                skill.Level++;
+                            }
+                            else if(skill == null)
+                            {
+                                contributor.Skills.Add(new Skill { Name = currentProject.Skills[i].Name, Level = 1 });
+                            }
+                        }
+                    }
+                }
 
-            //var streetsPerUseDescending = simulation.Paths
-            //    .SelectMany(x => x.StreetNames)
-            //    .GroupBy(x => x)
-            //    .OrderByDescending(x => x.Count())
-            //    .ToDictionary(x => x.Key);
-            //foreach (var intersection in intersections)
-            //{
-            //    intersection.Incoming = intersection.Incoming
-            //        .OrderByDescending(x => streetsPerUseDescending.ContainsKey(x.Name) ? streetsPerUseDescending[x.Name].Count() : 0)
-            //        .ToList();
-
-            //    var streetsToDelete = new List<Street>();
-            //    foreach (var incoming in intersection.Incoming)
-            //    {
-            //        if (streetsPerUseDescending.ContainsKey(incoming.Name))
-            //        {
-            //            intersection.GreenSeconds.Add((streetsPerUseDescending[incoming.Name].Count() / 25) + 1);
-            //        }
-            //        else
-            //        {
-            //            streetsToDelete.Add(incoming);
-            //        }
-            //    }
-
-            //    foreach (var street in streetsToDelete)
-            //    {
-            //        intersection.Incoming.Remove(street);
-            //    }
-            //}
-
-            //foreach (var car in simulation.Paths)
-            //{
-            //    intersections[simulation.Streets.Single(x => x.Name == car.StreetNames[0]).EndIntersection].Cars.Add(car);
-            //}
+                bool projectAvailable = true;
+                do
+                {
+                    var assignableContributors = input.Contributors.Where(x => !output.Projects.Any(y => y.Duration > 0 && y.Contributors.Contains(x))).ToList();
+                    var project = SelectProject(input, assignableContributors);
+                    if (project != null)
+                    {
+                        output.Projects.Add(project);
+                    }
+                    else
+                    {
+                        projectAvailable = false;
+                    }
+                }
+                while (projectAvailable);
+                ++day;
+            }
+            while (input.Projects.Any());
 
             return output;
+        }
+
+        private static Project SelectProject(Input input, List<Contributor> assignableContributors)
+        {
+            Project selectedProject = null;
+
+
+            foreach (var project in input.Projects)
+            {
+                bool skipProject = false;
+                foreach (var skill in project.Skills)
+                {
+                    var candidates = assignableContributors.Where(x => x.Skills.Any(y => y.Name == skill.Name && y.Level >= skill.Level) && !project.Contributors.Contains(x));
+                    var candidate = candidates.FirstOrDefault();
+
+                    if (candidate != null)
+                    {
+                        project.Contributors.Add(candidate);
+                    }
+                    else
+                    {
+                        project.Contributors.Clear();
+                        skipProject = true;
+                    }
+                }
+
+                if (!skipProject)
+                {
+                    input.Projects.Remove(project);
+                    selectedProject = project;
+                    break;
+                }
+            }
+
+            return selectedProject;
         }
 
         private static void GenerateSubmission(Output output, string fileName)
