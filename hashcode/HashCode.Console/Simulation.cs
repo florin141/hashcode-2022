@@ -2,34 +2,35 @@
 
 namespace HashCode.Console
 {
-	public class Simulation
+	public class Input
 	{
-        public Simulation()
+        public Input()
         {
-            Streets = new List<Street>();
-            Paths = new List<CarPath>();
+            Contributors = new List<Contributor>();
+            Projects = new List<Project>();
         }
 
-		public int Contributors { get; set; }
+        public int ContributorCount { get; set; }
 
-		public int Projects { get; set; }
+		public int ProjectCount { get; set; }
 
-		public int NumberOfStreets { get; set; }
+        public List<Contributor> Contributors { get; set; }
 
-		public int NumberOfCars { get; set; }
-
-		public int Bonus { get; set; }
-
-        public List<Street> Streets { get; set; }
-
-        public List<CarPath> Paths { get; set; }
-	}
+        public List<Project> Projects { get; set; }
+    }
 
 	public class Contributor
     {
+        public Contributor()
+        {
+            Skills = new List<Skill>();
+        }
+
         public string Name { get; set; }
 
-		public int Skills { get; set; }
+		public int SkillCount { get; set; }
+
+        public List<Skill> Skills { get; set; }
 
         public override string ToString()
         {
@@ -39,19 +40,29 @@ namespace HashCode.Console
 
 	public class Skill
     {
-        public Skill()
-        {
-            StreetNames = new List<string>();
-        }
-
-		public int Id { get; set; }
-		public int TotalStreets { get; set; }
-
-		public List<string> StreetNames { get; set; }
+        public string Name { get; set; }
+		public int Level { get; set; }
 
         public override string ToString()
         {
-            return $"street to travel: {TotalStreets}, from {string.Join(", ", StreetNames)}";
+            return $"{Name} {Level}";
         }
 	}
+
+    public class Project
+    {
+        public Project()
+        {
+            Skills = new List<Skill>();
+        }
+
+        public string Name { get; set; }
+
+        public int Duration { get; set; }
+        public int Score { get; set; }
+        public int BestBefore { get; set; }
+        public int NumberOfRoles { get; set; }
+
+        public List<Skill> Skills { get; set; }
+    }
 }
