@@ -10,12 +10,12 @@ namespace HashCode.Console
     {
         public static string[] FileNames =
         {
-            "a_an_example.in.txt",
+            //"a_an_example.in.txt",
             "b_better_start_small.in.txt",
-            "c_collaboration.in.txt",
-            "d_dense_schedule.in.txt",
-            "e_exceptional_skills.in.txt",
-            "f_find_great_mentors.in.txt",
+            //"c_collaboration.in.txt",
+            //"d_dense_schedule.in.txt",
+            //"e_exceptional_skills.in.txt",
+            //"f_find_great_mentors.in.txt",
         };
 
         static void Main(string[] args)
@@ -101,6 +101,8 @@ namespace HashCode.Console
 
             foreach (var project in input.Projects)
             {
+                project.Contributors.Clear();
+
                 bool skipProject = false;
                 foreach (var skill in project.Skills)
                 {
