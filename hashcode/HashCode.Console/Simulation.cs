@@ -19,6 +19,16 @@ namespace HashCode.Console
         public List<Project> Projects { get; set; }
     }
 
+    public class Output
+    {
+        public Output()
+        {
+            Projects = new List<Project>();
+        }
+
+        public List<Project> Projects { get; set; }
+    }
+
 	public class Contributor
     {
         public Contributor()
@@ -54,6 +64,7 @@ namespace HashCode.Console
         public Project()
         {
             Skills = new List<Skill>();
+            Contributors = new List<Contributor>();
         }
 
         public string Name { get; set; }
@@ -64,5 +75,6 @@ namespace HashCode.Console
         public int NumberOfRoles { get; set; }
 
         public List<Skill> Skills { get; set; }
+        public List<Contributor> Contributors { get; set; }
     }
 }
