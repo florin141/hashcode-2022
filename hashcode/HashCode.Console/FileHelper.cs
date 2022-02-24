@@ -12,12 +12,16 @@ namespace HashCode.Console
 
 		private static string OutputPath => Path.Combine(Directory.GetCurrentDirectory());
 
-		public static Simulation ReadFromFile(string fileName)
+		public static Input ReadFromFile(string fileName)
 		{
-			var input = new Simulation();
+			var input = new Input();
 
             int counter = 0;
-			string line;
+            int contributorCnt = 0;
+            int projectCnt = 0;
+            
+            int skillCnt2 = 0;
+            string line;
 			StreamReader file = new StreamReader(Path.Combine(InputPath, fileName));
 			while ((line = file.ReadLine()) != null)
 			{
@@ -27,38 +31,40 @@ namespace HashCode.Console
 				{
 					var parts = line.Split(' ');
 
-					input.Duration = int.Parse(parts[0]);
-					input.NumberOfIntersections = int.Parse(parts[1]);
-					input.NumberOfStreets = int.Parse(parts[2]);
-					input.NumberOfCars = int.Parse(parts[3]);
-					input.Bonus = int.Parse(parts[4]);
-				}
+					input.ContributorCount = int.Parse(parts[0]);
+					input.ProjectCount = int.Parse(parts[1]);
+                }
 
-				if (counter != 1 && counter <= input.NumberOfStreets + 1)
-				{
-					var parts = line.Split(' ');
+                if (counter != 1 && counter <= input.ContributorCount + 1)
+                {
+                    var parts = line.Split(' ');
 
-                    input.Streets.Add(new Street
-					{
-						StartIntersection = int.Parse(parts[0]),
-						EndIntersection = int.Parse(parts[1]),
-						Name = parts[2],
-						Duration = int.Parse(parts[3])
-					});
-				}
+                    var cont = new Contributor
+                    {
+                        Name = parts[0],
+                        SkillCount = int.Parse(parts[1])
+                    };
+                    
+                    int skillCnt1 = 0;
+                    string skillLine = string.Empty;
+                    while ((skillLine = file.ReadLine()) != null && skillCnt1 <= cont.SkillCount + 1)
+                    {
+                        skillCnt1++;
 
-				if (counter > input.NumberOfStreets + 1)
-				{
-					var parts = line.Split(' ');
+                        var skillParts = skillLine.Split(' ');
 
-                    input.Paths.Add(new CarPath
-					{
-						Id = input.Paths.Count + 1,
-						TotalStreets = int.Parse(parts[0]),
-						StreetNames = parts.Skip(1).Select(x => x).ToList()
-					}); ;
-				}
-			}
+                        var skill = new Skill
+                        {
+                            Name = skillParts[0],
+                            Level = int.Parse(skillParts[1])
+                        };
+
+                        cont.Skills.Add(skill);
+                    }
+
+                    input.Contributors.Add(cont);
+                }
+            }
 
 			file.Close();
 

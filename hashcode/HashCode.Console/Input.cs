@@ -34,7 +34,7 @@ namespace HashCode.Console
 
         public override string ToString()
         {
-            return $"{Name} {Skills}";
+            return $"{Name} {SkillCount}";
         }
     }
 
