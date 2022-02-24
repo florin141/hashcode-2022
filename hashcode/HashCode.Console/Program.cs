@@ -11,10 +11,10 @@ namespace HashCode.Console
         public static string[] FileNames =
         {
             //"a_an_example.in.txt",
-            "b_better_start_small.in.txt",
+            //"b_better_start_small.in.txt",
             //"c_collaboration.in.txt",
             //"d_dense_schedule.in.txt",
-            //"e_exceptional_skills.in.txt",
+            "e_exceptional_skills.in.txt",
             //"f_find_great_mentors.in.txt",
         };
 
@@ -99,14 +99,16 @@ namespace HashCode.Console
             Project selectedProject = null;
 
 
-            foreach (var project in input.Projects)
+            foreach (var project in input.Projects.OrderBy(x=>x.Skills.Count).ToList())
             {
                 project.Contributors.Clear();
 
                 bool skipProject = false;
                 foreach (var skill in project.Skills)
                 {
-                    var candidates = assignableContributors.Where(x => x.Skills.Any(y => y.Name == skill.Name && y.Level >= skill.Level) && !project.Contributors.Contains(x));
+                    var candidates = assignableContributors.Where(x => 
+                    (x.Skills.Any(y => (y.Name == skill.Name && y.Level >= skill.Level) && !project.Contributors.Contains(x)) || 
+                    (x.Skills.Any(y => y.Name == skill.Name && y.Level >= skill.Level - 1) || skill.Level == 1) && !project.Contributors.Contains(x) && project.Contributors.Any(y => y.Skills.Any(z=> z.Name == skill.Name && z.Level >= skill.Level))));
                     var candidate = candidates.FirstOrDefault();
 
                     if (candidate != null)
