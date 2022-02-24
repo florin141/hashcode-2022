@@ -11,11 +11,11 @@ namespace HashCode.Console
         public static string[] FileNames =
         {
             "a_an_example.in.txt",
-            //"b_better_start_small.in.txt",
-            //"c_collaboration.in.txt",
-            //"d_dense_schedule.in.txt",
-            //"e_exceptional_skills.in.txt",
-            //"f_find_great_mentors.in.txt",
+            "b_better_start_small.in.txt",
+            "c_collaboration.in.txt",
+            "d_dense_schedule.in.txt",
+            "e_exceptional_skills.in.txt",
+            "f_find_great_mentors.in.txt",
         };
 
         static void Main(string[] args)
@@ -43,11 +43,13 @@ namespace HashCode.Console
 
             do
             {
+                bool projectFinished = false;
                 foreach (var currentProject in output.Projects.Where(x => x.Duration > 0))
                 {
                     currentProject.Duration--;
                     if (currentProject.Duration == 0)
                     {
+                        projectFinished = true;
                         for (int i = 0; i < currentProject.Skills.Count; i++)
                         {
                             var contributor = currentProject.Contributors[i];
@@ -62,6 +64,12 @@ namespace HashCode.Console
                             }
                         }
                     }
+                }
+
+                if(!projectFinished && day > 0)
+                {
+                    ++day;
+                    continue;
                 }
 
                 bool projectAvailable = true;
@@ -81,7 +89,7 @@ namespace HashCode.Console
                 while (projectAvailable);
                 ++day;
             }
-            while (input.Projects.Any());
+            while (input.Projects.Any() && output.Projects.Any(x=>x.Duration > 0));
 
             return output;
         }
@@ -107,6 +115,7 @@ namespace HashCode.Console
                     {
                         project.Contributors.Clear();
                         skipProject = true;
+                        break;
                     }
                 }
 
