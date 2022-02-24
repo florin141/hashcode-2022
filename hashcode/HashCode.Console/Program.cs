@@ -32,72 +32,70 @@ namespace HashCode.Console
             }
         }
 
-        //    private static List<Intersection> Solve(Simulation simulation)
-        //    {
-        //        var intersections = Enumerable
-        //            .Range(0, simulation.NumberOfIntersections).Select(x => new Intersection { Id = x })
-        //            .ToList();
+        private static Output Solve(Input input)
+        {
+            var output = new Output();
+            //var intersections = Enumerable
+            //    .Range(0, simulation.NumberOfIntersections).Select(x => new Intersection { Id = x })
+            //    .ToList();
 
-        //        foreach (var street in simulation.Streets)
-        //        {
-        //            intersections[street.StartIntersection].Outgoing.Add(street);
-        //            intersections[street.EndIntersection].Incoming.Add(street);
-        //        }
+            //foreach (var street in simulation.Streets)
+            //{
+            //    intersections[street.StartIntersection].Outgoing.Add(street);
+            //    intersections[street.EndIntersection].Incoming.Add(street);
+            //}
 
-        //        var streetsPerUseDescending = simulation.Paths
-        //            .SelectMany(x => x.StreetNames)
-        //            .GroupBy(x => x)
-        //            .OrderByDescending(x => x.Count())
-        //            .ToDictionary(x => x.Key);
-        //        foreach (var intersection in intersections)
-        //        {
-        //            intersection.Incoming = intersection.Incoming
-        //                .OrderByDescending(x => streetsPerUseDescending.ContainsKey(x.Name) ? streetsPerUseDescending[x.Name].Count() : 0)
-        //                .ToList();
+            //var streetsPerUseDescending = simulation.Paths
+            //    .SelectMany(x => x.StreetNames)
+            //    .GroupBy(x => x)
+            //    .OrderByDescending(x => x.Count())
+            //    .ToDictionary(x => x.Key);
+            //foreach (var intersection in intersections)
+            //{
+            //    intersection.Incoming = intersection.Incoming
+            //        .OrderByDescending(x => streetsPerUseDescending.ContainsKey(x.Name) ? streetsPerUseDescending[x.Name].Count() : 0)
+            //        .ToList();
 
-        //            var streetsToDelete = new List<Street>();
-        //            foreach (var incoming in intersection.Incoming)
-        //            {
-        //                if (streetsPerUseDescending.ContainsKey(incoming.Name))
-        //                {
-        //                    intersection.GreenSeconds.Add((streetsPerUseDescending[incoming.Name].Count() / 25) + 1);
-        //                }
-        //                else
-        //                {
-        //                    streetsToDelete.Add(incoming);
-        //                }
-        //            }
+            //    var streetsToDelete = new List<Street>();
+            //    foreach (var incoming in intersection.Incoming)
+            //    {
+            //        if (streetsPerUseDescending.ContainsKey(incoming.Name))
+            //        {
+            //            intersection.GreenSeconds.Add((streetsPerUseDescending[incoming.Name].Count() / 25) + 1);
+            //        }
+            //        else
+            //        {
+            //            streetsToDelete.Add(incoming);
+            //        }
+            //    }
 
-        //            foreach (var street in streetsToDelete)
-        //            {
-        //                intersection.Incoming.Remove(street);
-        //            }
-        //        }
+            //    foreach (var street in streetsToDelete)
+            //    {
+            //        intersection.Incoming.Remove(street);
+            //    }
+            //}
 
-        //        foreach (var car in simulation.Paths)
-        //        {
-        //            intersections[simulation.Streets.Single(x => x.Name == car.StreetNames[0]).EndIntersection].Cars.Add(car);
-        //        }
+            //foreach (var car in simulation.Paths)
+            //{
+            //    intersections[simulation.Streets.Single(x => x.Name == car.StreetNames[0]).EndIntersection].Cars.Add(car);
+            //}
 
-        //        return intersections;
-        //    }
+            return output;
+        }
 
-        //    private static void GenerateSubmission(List<Intersection> intersections, string fileName)
-        //    {
-        //        var sb = new StringBuilder();
-        //        sb.AppendLine(intersections.Count(x => x.GreenSeconds.Any()).ToString());
-        //        foreach (var intersection in intersections.Where(x => x.GreenSeconds.Any()))
-        //        {
-        //            sb.AppendLine(intersection.Id.ToString());
-        //            sb.AppendLine(intersection.Incoming.Count.ToString());
-        //            for (int i = 0; i < intersection.Incoming.Count; i++)
-        //            {
-        //                sb.AppendLine(intersection.Incoming[i].Name + " " + intersection.GreenSeconds[i]);
-        //            }
-        //        }
+        private static void GenerateSubmission(Output output, string fileName)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine(output.Projects.Count.ToString());
 
-        //        FileHelper.WriteFileContents(fileName.Insert(1, "_result"), sb.ToString());
-        //    }
-        //}
+            foreach (var project in output.Projects)
+            {
+                sb.AppendLine(project.Name);
+                sb.AppendLine(string.Join(" ", project.Contributors.Select(x => x.Name)));
+
+            }
+
+            FileHelper.WriteFileContents("result-" + fileName, sb.ToString());
+        }
     }
 }
