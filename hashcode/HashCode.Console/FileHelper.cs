@@ -21,52 +21,108 @@ namespace HashCode.Console
             int projectCnt = 0;
             
             int skillCnt2 = 0;
-            string line;
+            //string line;
 			StreamReader file = new StreamReader(Path.Combine(InputPath, fileName));
-			while ((line = file.ReadLine()) != null)
-			{
-				counter++;
 
-				if (counter == 1)
-				{
-					var parts = line.Split(' ');
+            var lines = File.ReadAllLines(Path.Combine(InputPath, fileName));
+            
+            var parts = lines[0].Split(' ');
 
-					input.ContributorCount = int.Parse(parts[0]);
-					input.ProjectCount = int.Parse(parts[1]);
-                }
+            input.ContributorCount = int.Parse(parts[0]);
+            input.ProjectCount = int.Parse(parts[1]);
 
-                if (counter != 1 && counter <= input.ContributorCount + 1)
+            int line = 1;
+
+            for (int i = 0; i < input.ContributorCount; i++)
+            {
+                parts = lines[line++].Split(' ');
+
+                var contributor = new Contributor();
+                contributor.Name = parts[0];
+                contributor.SkillCount = int.Parse(parts[1]);
+                input.Contributors.Add(contributor);
+
+                for (int j = 0; j < contributor.SkillCount; j++)
                 {
-                    var parts = line.Split(' ');
+                    parts = lines[line++].Split(' ');
 
-                    var cont = new Contributor
-                    {
-                        Name = parts[0],
-                        SkillCount = int.Parse(parts[1])
-                    };
-                    
-                    int skillCnt1 = 0;
-                    string skillLine = string.Empty;
-                    while ((skillLine = file.ReadLine()) != null && skillCnt1 <= cont.SkillCount + 1)
-                    {
-                        skillCnt1++;
-
-                        var skillParts = skillLine.Split(' ');
-
-                        var skill = new Skill
-                        {
-                            Name = skillParts[0],
-                            Level = int.Parse(skillParts[1])
-                        };
-
-                        cont.Skills.Add(skill);
-                    }
-
-                    input.Contributors.Add(cont);
+                    var skill = new Skill();
+                    skill.Name = parts[0];
+                    skill.Level = int.Parse(parts[1]);
+                    contributor.Skills.Add(skill);
                 }
             }
 
-			file.Close();
+            for (int i = 0; i < input.ProjectCount; i++)
+            {
+                parts = lines[line++].Split(' ');
+
+                var project = new Project();
+                project.Name = parts[0];
+                project.Duration = int.Parse(parts[1]);
+                project.Score= int.Parse(parts[2]);
+                project.BestBefore = int.Parse(parts[3]);
+                project.NumberOfRoles = int.Parse(parts[4]);
+                input.Projects.Add(project);
+
+                for (int j = 0; j < project.NumberOfRoles; j++)
+                {
+                    parts = lines[line++].Split(' ');
+
+                    var skill = new Skill();
+                    skill.Name = parts[0];
+                    skill.Level = int.Parse(parts[1]);
+                    project.Skills.Add(skill);
+                }
+            }
+
+
+
+
+   //         while ((line = file.ReadLine()) != null)
+			//{
+			//	counter++;
+
+			//	if (counter == 1)
+			//	{
+			//		var parts = line.Split(' ');
+
+			//		input.ContributorCount = int.Parse(parts[0]);
+			//		input.ProjectCount = int.Parse(parts[1]);
+   //             }
+
+   //             if (counter != 1 && counter <= input.ContributorCount + 1)
+   //             {
+   //                 var parts = line.Split(' ');
+
+   //                 var cont = new Contributor
+   //                 {
+   //                     Name = parts[0],
+   //                     SkillCount = int.Parse(parts[1])
+   //                 };
+                    
+   //                 int skillCnt1 = 0;
+   //                 string skillLine = string.Empty;
+   //                 while ((skillLine = file.ReadLine()) != null && skillCnt1 <= cont.SkillCount + 1)
+   //                 {
+   //                     skillCnt1++;
+
+   //                     var skillParts = skillLine.Split(' ');
+
+   //                     var skill = new Skill
+   //                     {
+   //                         Name = skillParts[0],
+   //                         Level = int.Parse(skillParts[1])
+   //                     };
+
+   //                     cont.Skills.Add(skill);
+   //                 }
+
+   //                 input.Contributors.Add(cont);
+   //             }
+   //         }
+
+			//file.Close();
 
 			return input;
 		}
