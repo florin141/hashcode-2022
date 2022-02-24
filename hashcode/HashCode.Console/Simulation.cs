@@ -10,9 +10,9 @@ namespace HashCode.Console
             Paths = new List<CarPath>();
         }
 
-		public int Duration { get; set; }
+		public int Contributors { get; set; }
 
-		public int NumberOfIntersections { get; set; }
+		public int Projects { get; set; }
 
 		public int NumberOfStreets { get; set; }
 
@@ -25,25 +25,21 @@ namespace HashCode.Console
         public List<CarPath> Paths { get; set; }
 	}
 
-	public class Street
-	{
-		public int StartIntersection { get; set; }
+	public class Contributor
+    {
+        public string Name { get; set; }
 
-		public int EndIntersection { get; set; }
-
-		public string Name { get; set; }
-
-		public int Duration { get; set; }
+		public int Skills { get; set; }
 
         public override string ToString()
         {
-            return $"street: {Name} from {StartIntersection} to {EndIntersection} in {Duration} sec";
+            return $"{Name} {Skills}";
         }
     }
 
-	public class CarPath
-	{
-        public CarPath()
+	public class Skill
+    {
+        public Skill()
         {
             StreetNames = new List<string>();
         }
